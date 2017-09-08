@@ -1,31 +1,58 @@
 import { h, Component } from 'preact';
 import { Router } from 'preact-router';
 
+import {
+	ApolloProvider,
+	createNetworkInterface,
+	ApolloClient,
+} from 'react-apollo';
+
 import Header from './header';
 import Home from '../routes/home';
 import Profile from '../routes/profile';
-// import Home from 'async!./home';
-// import Profile from 'async!./profile';
+
+
+const networkInterface = createNetworkInterface({
+	uri: 'https://api.github.com/graphql',
+	opts: {
+		headers: {
+			'Authorization': 'bearer 786e1fc00a6b82188751b876b13c95d70dc4fab3',
+		}
+	}
+});
+
+const client = new ApolloClient({
+  networkInterface,
+});
 
 export default class App extends Component {
-	/** Gets fired when the route changes.
-	 *	@param {Object} event		"change" event from [preact-router](http://git.io/preact-router)
-	 *	@param {string} event.url	The newly routed URL
-	 */
-	handleRoute = e => {
-		this.currentUrl = e.url;
+	state = {
+		isHomepage: true,
 	};
+
+	handleRoute = e => {
+		if (e.url === '/' && this.state.isHomepage === false) {
+			this.setState({ isHomepage: true });
+		} else if (e.url !== '/' && this.state.isHomepage === true) {
+			this.setState({ isHomepage: false });
+		}
+	}
+
+	componentDidMount() {
+		this.handleRoute({ url: location.pathname });
+	}
 
 	render() {
 		return (
-			<div id="app">
-				<Header />
-				<Router onChange={this.handleRoute}>
-					<Home path="/" />
-					<Profile path="/profile/" user="me" />
-					<Profile path="/profile/:user" />
-				</Router>
-			</div>
+			<ApolloProvider client={client}>
+				<div id="app">
+					<Header isHomepage={this.state.isHomepage} />
+					<Router onChange={this.handleRoute}>
+						<Home path="/" />
+						<Profile path="/:user" />
+					</Router>
+				</div>
+			</ApolloProvider>
 		);
 	}
 }
