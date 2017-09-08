@@ -17,14 +17,19 @@
     "extends": "eslint-config-synacor"
   },
   "devDependencies": {
+    "babel-eslint": "7",
     "eslint": "^4.6.1",
     "eslint-config-synacor": "^1.1.1",
     "if-env": "^1.0.0",
     "preact-cli": "^1.4.1"
   },
   "dependencies": {
+    "apollo-client": "^1.9.2",
+    "classnames": "^2.2.5",
+    "graphql-tag": "^2.4.2",
     "preact": "^8.2.5",
     "preact-compat": "^3.17.0",
-    "preact-router": "^2.5.7"
+    "preact-router": "^2.5.7",
+    "react-apollo": "^1.4.15"
   }
 }
