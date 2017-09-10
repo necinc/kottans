@@ -1,7 +1,8 @@
-DIRS=$(ls -d .)
 FILES=$(find . -maxdepth 1 -type f)
 
-for dn in $DIRS; do
+rm -rf src
+
+for dn in $FILES; do
     if ($dn != 'build')
       echo "Directory $dn will be removed";
       rm -rf $dn;
