@@ -7,11 +7,6 @@ export default class Header extends Component {
 	static defaultProps = {
 		isHomepage: true,
 	};
-	
-	handleBack = e => {
-		e && e.preventDefault();
-		history.back();
-	}
 
 	render() {
 		const { isHomepage } = this.props;
@@ -24,10 +19,14 @@ export default class Header extends Component {
 			<header className={headerClassNames}>
 				{isHomepage === false && (
 					<nav>
-						<a className={style.back} onClick={this.handleBack} href="/">Back</a>
+						<Link className={style.back} href="/">Back</Link>
 					</nav>
 				)}
-				<img className={style.logo} src="/assets/GitHub-Mark.svg" />
+				<img
+					className={style.logo}
+					src="/assets/GitHub-Mark.svg"
+					alt="Github's Octocat"
+				/>
 			</header>
 		);
 	}

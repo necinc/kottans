@@ -1,5 +1,86 @@
 .profile {
-	padding: 56px 20px;
+	padding: 3em 5vw;
 	min-height: 100%;
 	width: 100%;
+}
+
+.userInfo {
+	display: flex;
+	margin-bottom: 2.5em;
+}
+
+.avatar {
+	width: 20vmin;
+	height: 20vmin;
+	border-radius: 3px;
+	background: #e5e5e5;
+}
+
+.textData {
+	display: flex;
+	flex-flow: column;
+	justify-content: space-between;
+	padding-left: .5em;
+}
+
+.list {
+	margin: 0;
+	padding: 0;
+}
+
+.username {
+	font-size: 1.8em;
+	line-height: 2em;
+	color: var(--text-color);
+	margin: 0;
+	vertical-align: top;
+}
+
+.login {
+	font-size: 1.2em;
+	line-height: 1.6em;
+	color: #777;
+	vertical-align: top;
+}
+
+
+.emptyContainer {
+	padding: 20vh 5vw;
+	margin: auto;
+	text-align: center;
+}
+
+.emptyContainer p {
+	color: #888;
+	font-size: 2em;
+}
+
+.spinner {
+	display: inline-block;
+	width: 5em;
+	height: 5em;
+	margin: auto;
+	background: transparent url('/assets/spinner.svg') center center no-repeat;
+	background-size: 5em;
+	animation: loaderAnim 2s infinite linear;
+}
+
+@keyframes loaderAnim {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
+}
+
+
+@media screen and (min-width: 1024px) {
+	.profile {
+		width: 65vw;
+		margin: auto;
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	.avatar {
+		width: 15vmin;
+		height: 15vmin;
+	}
 }
