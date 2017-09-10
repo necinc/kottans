@@ -1,0 +1,27 @@
+language: node_js
+
+node_js:
+  - 8
+
+before_install: 
+  - npm install -g preact-cli
+
+install:
+  - npm install
+
+before_script:
+  - ls node_modules/.bin
+
+script:
+  - npm run build
+
+before_deploy:
+  - ./cleanup_build.sh
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  target_branch: master
+  on:
+    branch: source
