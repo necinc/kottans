@@ -5,13 +5,14 @@ import {
 	ApolloClient,
 } from 'react-apollo';
 
+import config from '../../config';
 import { UserProfile, OrganizationProfile } from './profile';
 
 const networkInterface = createNetworkInterface({
 	uri: 'https://api.github.com/graphql',
 	opts: {
 		headers: {
-			'Authorization': 'bearer b90f729f7a0dde4d89058772742e85070260e4b5',
+			'Authorization': `bearer ${config.github_token}`,
 		}
 	}
 });
