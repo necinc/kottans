@@ -6,6 +6,10 @@ node_js:
 install:
   - yarn
 
+before_script:
+  - ls node_modules | grep preact
+  - ls node_modules/.bin
+
 script:
   - yarn build
 
