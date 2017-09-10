@@ -12,7 +12,7 @@ const networkInterface = createNetworkInterface({
 	uri: 'https://api.github.com/graphql',
 	opts: {
 		headers: {
-			'Authorization': `bearer ${config.github_token}`,
+			'Authorization': `bearer ${config.github_token.firstPart + config.github_token.secondPart}`,
 		}
 	}
 });
