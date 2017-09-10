@@ -41,18 +41,15 @@
 	position: absolute;
 	left: 0;
 	top: 0;
-	background: #ccc;
+	background: url('/assets/left-arrow.svg') center center no-repeat;
+	background-size: 1.6em;
 	color: transparent;
 	width: 58px;
 }
 
 .header nav a:hover,
 .header nav a:active {
-	background: rgba(0,0,0,0.2);
-}
-
-.header nav a.active {
-	background: rgba(0,0,0,0.4);
+	background-color: rgba(0,0,0,0.05);
 }
 
 .headerHome {
