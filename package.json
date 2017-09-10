@@ -22,7 +22,8 @@
     "eslint": "^4.6.1",
     "eslint-config-synacor": "^1.1.1",
     "if-env": "^1.0.0",
-    "preact-cli": "^1.4.1"
+    "preact-cli": "^1.4.1",
+    "yargs": "^8.0.2"
   },
   "dependencies": {
     "apollo-client": "^1.9.2",
