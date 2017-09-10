@@ -1,3 +1,9 @@
+:root {
+	--main-border-color: #d5d5d5;
+	--outline-color: #348762;
+	--text-color: #414141;
+}
+
 html, body {
 	height: 100%;
 	width: 100%;
@@ -15,9 +21,6 @@ html, body {
 	box-sizing: border-box;
 }
 
-#app {
-	height: 100%;
-}
 body {
 	font-size: 3.5vw;
 }
