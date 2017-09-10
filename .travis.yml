@@ -1,0 +1,18 @@
+language: node_js
+
+install:
+  - yarn install
+
+script:
+  - yarn build
+
+before_deploy:
+  - ./cleanup_build.sh
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  target_branch: master
+  on:
+    branch: source
