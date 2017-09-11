@@ -3,6 +3,11 @@ import style from './style';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
+import {
+	getQueryFor,
+	loadMoreRepos
+} from '../../common/profileHelpers';
+
 import Card from '../../components/card/Card';
 
 class Profile extends Component {
@@ -27,12 +32,37 @@ class Profile extends Component {
 		/>
 	));
 
+	requestSent = false;
+	scrollListener = () => {
+		const { scrollY, innerHeight } = window;
+		const { scrollHeight } = document.body;
+		const { tryUser, data } = this.props;
+		const { pageInfo } = (tryUser ? data.user.repositories : data.organization.repositories);
+
+		if (scrollY + innerHeight > scrollHeight - 100 && data.loading === false && pageInfo.hasNextPage && this.requestSent === false) {
+			this.requestSent = true;
+			this.props.loadMoreRepos().then(() => {
+				this.requestSent = false;
+			});
+		}
+	}
+
 	componentWillReceiveProps(nextProps) {
 		const { tryUser, data: { error } } = nextProps;
 		if (error !== undefined && tryUser === true) {
 			this.props.errorHandler();
 		}
-	} 
+	}
+
+	componentDidMount() {
+		window.addEventListener('scroll', this.scrollListener);
+		window.addEventListener('wheel', this.scrollListener);
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('scroll', this.scrollListener);
+		window.removeEventListener('wheel', this.scrollListener);
+	}
 
 	render() {
 		const {
@@ -93,65 +123,6 @@ class Profile extends Component {
 	}
 }
 
-const queryUser = gql`
-	query($login: String!, $count: Int!) {
-		user(login: $login) {
-			name
-			login
-			avatarUrl(size: 200),
-			repositories(first: $count) {
-				...repoData 
-			}
-		}
-	}
-
-	fragment repoData on RepositoryConnection {
-		nodes {
-			name
-			description
-			isFork
-			primaryLanguage {
-				name
-				color
-			}
-			createdAt
-			stargazers(first: 0) {
-				totalCount # Count of stars
-			} 
-		}
-	}
-`;
-
-
-const queryOrganization = gql`
-	query($login: String!, $count: Int!) {
-		organization(login: $login) {
-			name
-			login
-			avatarUrl(size: 200),
-			repositories(first: $count) {
-				...repoData 
-			}
-		}
-	}
-
-	fragment repoData on RepositoryConnection {
-		nodes {
-			name
-			description
-			isFork
-			primaryLanguage {
-				name
-				color
-			}
-			createdAt
-			stargazers(first: 0) {
-				totalCount # Count of stars
-			} 
-		}
-	}
-`;
-
 const selector = ({ login }) => ({
 	variables: {
 		login,
@@ -159,12 +130,16 @@ const selector = ({ login }) => ({
 	}
 });
 
-export const UserProfile = graphql(queryUser, {
-	options: selector
-})(Profile);
-
-export const OrganizationProfile = graphql(queryOrganization, {
+const getOptions = () => ({
 	options: selector,
-})(Profile);
+	props: (props) => ({
+		...props,
+		loadMoreRepos: loadMoreRepos(props),
+	}),
+});
+
+export const UserProfile = graphql(getQueryFor('user'), getOptions())(Profile);
+
+export const OrganizationProfile = graphql(getQueryFor('organization'), getOptions())(Profile);
 
 export default UserProfile;
