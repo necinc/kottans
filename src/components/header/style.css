@@ -81,3 +81,9 @@
 		display: none;
 	}
 }
+
+@media screen and (min-width: 1440px) {
+	.header:not(.headerHome) {
+		width: 50vw;
+	}
+}

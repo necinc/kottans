@@ -84,3 +84,9 @@
 		height: 15vmin;
 	}
 }
+
+@media screen and (min-width: 1440px) {
+	.profile {
+		width: 50vw;
+	}
+}
