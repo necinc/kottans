@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
-import style from './style';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
+import style from './style';
 import {
 	getQueryFor,
 	loadMoreRepos
@@ -20,6 +20,10 @@ class Profile extends Component {
 		tryUser: false,
 	};
 
+	state = {
+		loadingMore: false,
+	}
+
 	renderCards = (nodes) => nodes.map(card => (
 		<Card
 			name={card.name}
@@ -32,18 +36,16 @@ class Profile extends Component {
 		/>
 	));
 
-	requestSent = false;
 	scrollListener = () => {
 		const { scrollY, innerHeight } = window;
 		const { scrollHeight } = document.body;
 		const { tryUser, data } = this.props;
 		const { pageInfo } = (tryUser ? data.user.repositories : data.organization.repositories);
 
-		if (scrollY + innerHeight > scrollHeight - 100 && data.loading === false && pageInfo.hasNextPage && this.requestSent === false) {
-			this.requestSent = true;
-			this.props.loadMoreRepos().then(() => {
-				this.requestSent = false;
-			});
+		if (scrollY + innerHeight > scrollHeight - 100 && data.loading === false && pageInfo.hasNextPage && this.state.loadingMore === false) {
+			this.setState({ loadingMore: true })
+			this.props.loadMoreRepos()
+				.then(() => this.setState({ loadingMore: false }));
 		}
 	}
 
@@ -99,6 +101,8 @@ class Profile extends Component {
 			repositories,
 		} = data;
 
+		console.log(loading, repositories, repositories.nodes.length);
+
 		return (
 			<div className={style.profile}>
 				<div className={style.userInfo}>
@@ -117,6 +121,9 @@ class Profile extends Component {
 					<ul className={style.list}>
 						{this.renderCards(repositories ? repositories.nodes : [])}
 					</ul>
+					{this.state.loadingMore && (
+						<div className={style.spinner + ' ' + style.spinnerSmall} aria-hidden={true} />
+					)}
 				</section>
 			</div>
 		);
