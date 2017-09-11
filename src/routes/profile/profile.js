@@ -27,12 +27,37 @@ class Profile extends Component {
 		/>
 	));
 
+	requestSent = false;
+	scrollListener = () => {
+		const { scrollY, innerHeight } = window;
+		const { scrollHeight } = document.body;
+		const { tryUser, data } = this.props;
+		const { pageInfo } = (tryUser ? data.user.repositories : data.organization.repositories);
+
+		if (scrollY + innerHeight > scrollHeight - 100 && data.loading === false && pageInfo.hasNextPage && this.requestSent === false) {
+			this.requestSent = true;
+			this.props.loadMoreRepos().then(() => {
+				this.requestSent = false;
+			});
+		}
+	}
+
 	componentWillReceiveProps(nextProps) {
 		const { tryUser, data: { error } } = nextProps;
 		if (error !== undefined && tryUser === true) {
 			this.props.errorHandler();
 		}
-	} 
+	}
+
+	componentDidMount() {
+		window.addEventListener('scroll', this.scrollListener);
+		window.addEventListener('wheel', this.scrollListener);
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('scroll', this.scrollListener);
+		window.removeEventListener('wheel', this.scrollListener);
+	}
 
 	render() {
 		const {
@@ -93,19 +118,12 @@ class Profile extends Component {
 	}
 }
 
-const queryUser = gql`
-	query($login: String!, $count: Int!) {
-		user(login: $login) {
-			name
-			login
-			avatarUrl(size: 200),
-			repositories(first: $count) {
-				...repoData 
-			}
-		}
-	}
-
+const repoFragment = `
 	fragment repoData on RepositoryConnection {
+		pageInfo {
+			endCursor
+			hasNextPage
+		}
 		nodes {
 			name
 			description
@@ -122,10 +140,21 @@ const queryUser = gql`
 	}
 `;
 
+const getRepoQueryFor = (type = 'user') => gql`
+	query($login: String!, $count: Int!, $endCursor: String!) {
+		${type}(login: $login) {
+			repositories(first: $count, after: $endCursor) {
+				...repoData
+			}
+		}
+	}
 
-const queryOrganization = gql`
+	${repoFragment}
+`;
+
+const getQueryFor = (type = 'user') => gql`
 	query($login: String!, $count: Int!) {
-		organization(login: $login) {
+		${type}(login: $login) {
 			name
 			login
 			avatarUrl(size: 200),
@@ -135,21 +164,7 @@ const queryOrganization = gql`
 		}
 	}
 
-	fragment repoData on RepositoryConnection {
-		nodes {
-			name
-			description
-			isFork
-			primaryLanguage {
-				name
-				color
-			}
-			createdAt
-			stargazers(first: 0) {
-				totalCount # Count of stars
-			} 
-		}
-	}
+	${repoFragment}
 `;
 
 const selector = ({ login }) => ({
@@ -159,12 +174,57 @@ const selector = ({ login }) => ({
 	}
 });
 
-export const UserProfile = graphql(queryUser, {
-	options: selector
-})(Profile);
-
-export const OrganizationProfile = graphql(queryOrganization, {
+const getOptions = () => ({
 	options: selector,
-})(Profile);
+	props: (props) => ({
+		...props,
+		loadMoreRepos() {
+			const { data, ownProps: { tryUser, login } } = props;
+			const loadedData = tryUser ? data.user : data.organization;
+			const endCursor = loadedData.repositories.pageInfo.endCursor;
+
+			return data.fetchMore({
+				query: getRepoQueryFor(tryUser ? 'user' : 'organization'),
+				variables: {
+					login,
+					count: 10,
+					endCursor,
+				},
+				updateQuery: (prev, result) => {
+					const oldRepos = tryUser ? prev.user.repositories : prev.organization.repositories;
+					const newRepos = tryUser
+						? result.fetchMoreResult.user.repositories
+						: result.fetchMoreResult.organization.repositories;
+
+					return tryUser ? {
+						...prev,
+						user: {
+							...prev.user,
+							repositories: {
+								...prev.user.repositories,
+								nodes: [...prev.user.repositories.nodes, ...newRepos.nodes],
+								pageInfo: newRepos.pageInfo,
+							},
+						},
+					} : {
+						...prev,
+						organization: {
+							...prev.organization,
+							repositories: {
+								...prev.organization.repositories,
+								nodes: [...prev.organization.repositories.nodes, ...newRepos.nodes],
+								pageInfo: newRepos.pageInfo
+							},
+						},
+					};
+				},
+			});
+		},
+	}),
+});
+
+export const UserProfile = graphql(getQueryFor('user'), getOptions())(Profile);
+
+export const OrganizationProfile = graphql(getQueryFor('organization'), getOptions())(Profile);
 
 export default UserProfile;
