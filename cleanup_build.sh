@@ -4,8 +4,11 @@ rm -rf src
 rm -rf node_modules
 
 for fn in $FILES; do
-    echo "$fn will be removed";
-    rm $fn;
+    if [$fn != 'CNAME']
+    then
+        echo "$fn will be removed";
+        rm $fn;
+    fi
 done
 
 mv ./build/* .
