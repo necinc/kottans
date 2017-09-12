@@ -16,7 +16,8 @@ export default class Card extends Component {
     },
     stargazers: {
       totalCount: 0,
-    }
+    },
+    onClick: () => {},
   }
 
   beautify = count => {
@@ -38,6 +39,11 @@ export default class Card extends Component {
     return year + '/' + month + '/' + day;
   }
 
+  clickHandler = e => {
+    e.preventDefault();
+    this.props.onClick(this.props.name);
+  }
+
   render() {
     const {
       name,
@@ -52,33 +58,35 @@ export default class Card extends Component {
     const creationDate = this.parseDate(new Date(createdAt));
 
     return (
-      <li className={style.card} tabIndex={0}>
-        <h2 className={style.title}>{name}</h2>
-        {isFork && (
-          <img
-            className={style.forkMark}
-            src="/assets/fork.svg"
-            alr="Fork icon"
-            aria-label="Repository is a fork"
-          />
-        )}
-        
-        <div className={style.repoData}>
-          {primaryLanguage && (
-            <div>
-              <span
-                aria-label="language color"
-                className={style.languageColor}
-                style={{ background: primaryLanguage.color}}
-              />
-              <span className={style.languageName}>{primaryLanguage.name}</span>
-            </div>
+      <li className={style.card}>
+        <a href={`#${name}`} onClick={this.clickHandler}>
+          <h2 className={style.title}>{name}</h2>
+          {isFork && (
+            <img
+              className={style.forkMark}
+              src="/assets/fork.svg"
+              alr="Fork icon"
+              aria-label="Repository is a fork"
+            />
           )}
-          <span className={style.stars}>{stars}</span>
-          <span className={style.createdAt}>{creationDate}</span>
-        </div>
-        
-        <p className={style.description}>{description}</p>
+          
+          <div className={style.repoData}>
+            {primaryLanguage && (
+              <div>
+                <span
+                  aria-label="language color"
+                  className={style.languageColor}
+                  style={{ background: primaryLanguage.color}}
+                />
+                <span className={style.languageName}>{primaryLanguage.name}</span>
+              </div>
+            )}
+            <span className={style.stars}>{stars}</span>
+            <span className={style.createdAt}>{creationDate}</span>
+          </div>
+          
+          <p className={style.description}>{description}</p>
+        </a>
       </li>
     );
   }

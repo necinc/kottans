@@ -10,6 +10,9 @@ fragment repoData on RepositoryConnection {
     name
     description
     isFork
+    owner {
+      login
+    }
     primaryLanguage {
       name
       color
