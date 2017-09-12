@@ -22,6 +22,10 @@ html, body {
 	box-sizing: border-box;
 }
 
+*:focus {
+	outline-color: var(--outline-color);
+}
+
 body {
 	font-size: 3.5vw;
 }

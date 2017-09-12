@@ -114,10 +114,8 @@ class RepoPopup extends Component {
       parent
     } = repository;
 
-    console.log(this.props);
-
     return (
-      <div role="dialog" className={style.dialog}>
+      <div role="dialog" className={style.dialog} onClick={this.prevent}>
         <div className={style.dialogHeader}>
           <button
             type="button"
@@ -132,8 +130,8 @@ class RepoPopup extends Component {
             {name}
           </a>
         </h2>
-        {true/*isFork*/ && (
-          <p className={style.parentLink}><a href={'#'}>Parent repository</a></p>
+        {isFork && (
+          <p className={style.parentLink}><a href={parent.url}>Parent repository</a></p>
         )}
         {this.renderLanguageList(languages)}
         {this.renderPRList(pullRequests)}

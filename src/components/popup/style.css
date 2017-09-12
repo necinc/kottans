@@ -116,3 +116,19 @@
   color: var(--text-color);
   margin: 0;
 }
+
+
+@media screen and (min-width: 1024px) {
+  .dialog {
+    margin: auto;
+    width: 65vw;
+    height: auto;
+  }
+}
+
+
+@media screen and (min-width: 1440px) {
+	.dialog {
+		width: 50vw;
+	}
+}

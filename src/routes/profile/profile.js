@@ -26,12 +26,24 @@ class Profile extends Component {
 		popupOpen: null,
 	}
 
+	popup = null;
+
 	openPopup = name => {
 		this.setState({ popupOpen: name });
 	};
 
 	closePopup = () => {
 		this.setState({ popupOpen: null });
+	}
+
+	registerPopupRef = popup => {
+		this.popup === popup;
+	}
+
+	closeFromBackdrop = e => {
+		if (e.target.className === style.dialogWrapper) {
+			this.closePopup();
+		}
 	}
 
 	renderCards = (nodes) => nodes
@@ -137,7 +149,12 @@ class Profile extends Component {
 					)}
 				</section>
 				{this.state.popupOpen !== null && (
-					<section className={style.dialogWrapper} aria-label="Repository details">
+					<section
+						className={style.dialogWrapper}
+						aria-label="Repository details"
+						onClick={this.closeFromBackdrop}
+						ref={this.registerPopupRef}
+					>
 						<RepoPopup
 							login={login}
 							name={this.state.popupOpen}
