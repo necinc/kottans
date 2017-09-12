@@ -13,6 +13,9 @@ fragment repoData on RepositoryConnection {
     owner {
       login
     }
+    issues(states: OPEN) {
+      totalCount
+    }
     primaryLanguage {
       name
       color

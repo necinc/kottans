@@ -13,7 +13,7 @@ export default class Home extends Component {
 		e.preventDefault();
 		var username = this.input.value || '';
 		if (username.length) {
-			route(this.input.value);
+			route(this.input.value.trim());
 		} else {
 			this.input.focus();
 		}

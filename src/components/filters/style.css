@@ -1,0 +1,8 @@
+.filters {
+  width: 100%;
+}
+
+.filterLink {
+  text-decoration: none;
+  color: var(--text-color); 
+}

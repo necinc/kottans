@@ -8,6 +8,7 @@ import {
 	loadMoreRepos
 } from '../../common/profileHelpers';
 
+import Filters from '../../components/filters/Filters';
 import RepoPopup from '../../components/popup/Popup';
 import Card from '../../components/card/Card';
 
@@ -126,8 +127,13 @@ class Profile extends Component {
 			repositories,
 		} = data;
 
+		console.log(this.props);
+		
 		return (
 			<div className={style.profile}>
+				<Filters
+				
+				/>
 				<div className={style.userInfo}>
 					<img 
 						src={avatarUrl}
