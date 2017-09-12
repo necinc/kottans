@@ -8,6 +8,7 @@ import {
 	loadMoreRepos
 } from '../../common/profileHelpers';
 
+import RepoPopup from '../../components/popup/Popup';
 import Card from '../../components/card/Card';
 
 class Profile extends Component {
@@ -22,19 +23,43 @@ class Profile extends Component {
 
 	state = {
 		loadingMore: false,
+		popupOpen: null,
 	}
 
-	renderCards = (nodes) => nodes.map(card => (
-		<Card
-			name={card.name}
-			description={card.description}
-			isFork={card.isFork}
-			primaryLanguage={card.primaryLanguage}
-			createdAt={card.createdAt}
-			commitComments={card.commitComments}
-			stargazers={card.stargazers}
-		/>
-	));
+	popup = null;
+
+	openPopup = name => {
+		this.setState({ popupOpen: name });
+	};
+
+	closePopup = () => {
+		this.setState({ popupOpen: null });
+	}
+
+	registerPopupRef = popup => {
+		this.popup === popup;
+	}
+
+	closeFromBackdrop = e => {
+		if (e.target.className === style.dialogWrapper) {
+			this.closePopup();
+		}
+	}
+
+	renderCards = (nodes) => nodes
+		.filter(node => node.owner.login === this.props.login)
+		.map(card => (
+			<Card
+				name={card.name}
+				description={card.description}
+				isFork={card.isFork}
+				primaryLanguage={card.primaryLanguage}
+				createdAt={card.createdAt}
+				commitComments={card.commitComments}
+				stargazers={card.stargazers}
+				onClick={this.openPopup}
+			/>
+		));
 
 	scrollListener = () => {
 		const { scrollY, innerHeight } = window;
@@ -101,8 +126,6 @@ class Profile extends Component {
 			repositories,
 		} = data;
 
-		console.log(loading, repositories, repositories.nodes.length);
-
 		return (
 			<div className={style.profile}>
 				<div className={style.userInfo}>
@@ -125,6 +148,20 @@ class Profile extends Component {
 						<div className={style.spinner + ' ' + style.spinnerSmall} aria-hidden={true} />
 					)}
 				</section>
+				{this.state.popupOpen !== null && (
+					<section
+						className={style.dialogWrapper}
+						aria-label="Repository details"
+						onClick={this.closeFromBackdrop}
+						ref={this.registerPopupRef}
+					>
+						<RepoPopup
+							login={login}
+							name={this.state.popupOpen}
+							onClose={this.closePopup}
+						/>
+					</section>
+				)}
 			</div>
 		);
 	}

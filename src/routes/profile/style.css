@@ -43,6 +43,15 @@
 	vertical-align: top;
 }
 
+.dialogWrapper {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(0, 0, 0, .5);
+	z-index: 1000;
+}
 
 .emptyContainer {
 	padding: 20vh 5vw;
@@ -90,6 +99,11 @@
 	.avatar {
 		width: 15vmin;
 		height: 15vmin;
+	}
+
+	.dialogWrapper {
+		padding: 10vh 0;
+		overflow: auto;
 	}
 }
 
