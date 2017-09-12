@@ -1,0 +1,19 @@
+{
+  "name": "GitHub explorer",
+  "short_name": "GitHub explorer",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f5f5",
+  "theme_color": "#414141",
+  "icons": [{
+    "src": "/assets/GitHub-Mark.svg",
+    "type": "image/svg",
+    "sizes": "192x192"
+  },
+  {
+    "src": "/assets/icons/GitHub-Mark.svg",
+    "type": "image/svg",
+    "sizes": "512x512"
+  }]
+}
